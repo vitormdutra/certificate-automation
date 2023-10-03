@@ -23,6 +23,10 @@ case $i in
     USER="${i#*=}"
     shift
     ;;
+    -n=* | --node=*)
+    NODE="${i#*=}"
+    shift
+    ;;
     *)
 
     ;;
@@ -35,14 +39,17 @@ if [ "x$CONNECTION" = "x" ]; then
 fi
 
 
-if [ "$TYPE" = "proxmox" ] then 
-    #COMMANDS IN PROXMOX
+if [ "$TYPE" = "proxmox" ]; then 
+    ssh $USER@$CONNECTION -t 'mv /etc/pve/'${NODE}'/pve-ssl.pem /etc/pve/'${NODE}'/pve-ssl.old'
+    ssh $USER@$CONNECTION -t 'mv /etc/pve/'${NODE}'/pve-key.pem /etc/pve/'${NODE}'/pve-key.old'
+    scp -r $PATH_FROM $USER@$CONNECTION:$PATH_TO
+    ssh $USER@$CONNECTION -t 'systemctl restart pveproxy'
 fi
 
-if [ "$pro" = "pfsense" ] then 
+#if [ "$TYPE" = "pfsense" ]; then 
     #COMMANDS IN PFSENSE
-fi
+#fi
 
-if [ "$TYPE" = "linux" ] then 
-    scp -r $PASSWORD_FROM $USER@$CONNECTION:$PATH_TO
+if [ "$TYPE" = "linux" ]; then 
+    scp -r $PATH_FROM $USER@$CONNECTION:$PATH_TO
 fi
