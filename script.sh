@@ -49,7 +49,7 @@ if [ "$TYPE" = "proxmox" ]; then
 fi
 
 #if [ "$TYPE" = "pfsense" ]; then 
-    #COMMANDS IN PFSENSE
+
 #fi
 
 if [ "$TYPE" = "linux" ]; then 
